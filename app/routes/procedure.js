@@ -5,7 +5,7 @@ export default Ember.Route.extend({
     var dir = params.procedure_dir;
 
     return {
-      id: 1,
+      id: 0,
       name: 'Example',
       steps: [0, 1]
     };

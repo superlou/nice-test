@@ -23,8 +23,6 @@ export default Ember.Route.extend({
       }
     ];
 
-    console.log(params);
-
     return steps[params.step_id];
   },
 
@@ -33,7 +31,6 @@ export default Ember.Route.extend({
       var nextStep = this.currentModel.nextStep;
       if (nextStep) {
         this.transitionTo('procedure.step', this.currentModel.procedureId, nextStep);
-              console.log('here');
       }
     }
   }
