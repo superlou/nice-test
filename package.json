@@ -82,5 +82,8 @@
       "ProductName": null,
       "InternalName": null
     }
+  },
+  "dependencies": {
+    "npid": "^0.4.0"
   }
 }

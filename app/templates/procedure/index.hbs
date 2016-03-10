@@ -1,3 +1,7 @@
+<div>
+  Steps: {{model.stepsCount}}
+</div>
+
 {{#each model.steps as |step_id|}}
   {{#link-to 'procedure.step' model.id step_id}}Step {{step_id}}{{/link-to}}
 {{/each}}

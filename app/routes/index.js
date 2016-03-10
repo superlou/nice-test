@@ -1,6 +1,7 @@
 import Ember from 'ember';
 var remote = requireNode('remote');
 var dialog = remote.dialog;
+var electron = requireNode('electron');
 
 const proceduresPath = `${__dirname}/procedures/`;
 
@@ -18,6 +19,11 @@ export default Ember.Route.extend({
       if (!path.includes('/')) {
         this.transitionTo('procedure', path);
       }
+    },
+
+    loadServer: function() {
+      var ipcRenderer = electron.ipcRenderer;
+      var success = ipcRenderer.sendSync('startProcedureServer', 'example');
     }
   }
 });

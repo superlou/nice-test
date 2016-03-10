@@ -5,6 +5,9 @@ const electron         = require('electron');
 const app              = electron.app;
 const BrowserWindow    = electron.BrowserWindow;
 const emberAppLocation = `file://${__dirname}/dist/index.html`;
+const childProcess     = require('child_process');
+const path             = require('path');
+const fs               = require('fs');
 
 let mainWindow = null;
 
@@ -25,7 +28,7 @@ app.on('ready', function onReady() {
     delete mainWindow.module;
 
     // If you want to open up dev tools programmatically, call
-    // mainWindow.openDevTools();
+    mainWindow.openDevTools();
 
     // By default, we'll open the Ember App by directly going to the
     // file system.
@@ -44,4 +47,44 @@ app.on('ready', function onReady() {
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
+});
+
+var killByPID = function(path) {
+  try {
+    var pid = fs.readFileSync(path, 'utf8');
+    pid = parseInt(pid);
+    console.log(`Attempting to kill existing server process ${pid}`);
+    process.kill(pid, 'SIGTERM');
+  } catch (e) {
+    console.log(`exception ${e}`);
+    console.log('Exception or no existing server PID.  Continuing.');
+  }
+}
+
+electron.ipcMain.on('startProcedureServer', (event, dir) => {
+  killByPID('server.pid');
+
+  var serverFile = path.join(`${__dirname}`, 'public', 'procedures', dir, "procedure.py");
+  var serverProcess = childProcess.spawn("python", [serverFile]);
+  fs.writeFile('server.pid', serverProcess.pid);
+
+  serverProcess.stdout.on('data', (data) => {
+    // console.log(data);
+  });
+
+  serverProcess.stderr.on('data', (data) => {
+    console.log(`error: ${data}`);
+    if (data.indexOf('STARTED') >= 0) {
+      event.returnValue = true;
+    }
+  });
+
+  serverProcess.on('error', (err) => {
+    console.log(`Procedure server error ${err}`);
+  })
+
+  serverProcess.on('close', (code) => {
+    console.log(`Procedure server process exited with code ${code}`);
+    killByPID('server.pid');
+  });
 });
