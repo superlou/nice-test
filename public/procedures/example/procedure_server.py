@@ -1,6 +1,7 @@
 import cherrypy
 from step import Step
 
+
 class ProcedureServer(object):
     def __init__(self):
         self.stepsList = []
