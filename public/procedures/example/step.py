@@ -26,4 +26,5 @@ class Step(object):
             'name': self.name,
             'infoText': self.info_text,
             'fields': [field.id for field in self.fields],
+            'procedureId': 0
         }

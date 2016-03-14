@@ -34,7 +34,8 @@ class ProcedureServer(object):
         return {
             'id': 0,
             'name': self.name,
-            'stepsCount': len(Step.all)
+            'stepsCount': len(Step.all),
+            'steps': [step.id for step in Step.all]
         }
 
     @cherrypy.expose
