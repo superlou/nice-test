@@ -16,7 +16,7 @@ class Step(object):
         self.info_text = text
 
     def field(self, text, **kwargs):
-        field = Field(text, **kwargs)
+        field = Field(text, self, **kwargs)
         self.fields.append(field)
 
     def json(self):
@@ -24,6 +24,6 @@ class Step(object):
             'id': self.id,
             'name': self.name,
             'infoText': self.info_text,
-            'fields': [field.json() for field in self.fields],
+            'fields': [field.id for field in self.fields],
             'order': self.order
         }

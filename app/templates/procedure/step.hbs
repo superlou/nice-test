@@ -3,6 +3,9 @@
     <h2>{{model.name}} <small>step {{model.order}}</small></h2>
 
     <p>{{model.text}}</p>
+    {{#each model.fields as |field|}}
+      {{field.id}}, {{field.name}}<br>
+    {{/each}}
   {{/paper-card-content}}
 
   <div class="md-actions" layout="row" layout-align="end center">

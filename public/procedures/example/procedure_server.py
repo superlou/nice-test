@@ -1,5 +1,7 @@
 import cherrypy
 from step import Step
+from field import Field
+from itertools import chain
 
 
 class ProcedureServer(object):
@@ -42,6 +44,23 @@ class ProcedureServer(object):
             return [step.json() for step in self.stepsList]
         elif order in range(len(self.stepsList)):
             return self.stepsList[order].json()
+        else:
+            return {
+                'error': 'Unable to locate step'
+            }
+
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def fields(self, id=None):
+        try:
+            id = int(id)
+        except:
+            pass
+
+        if id is None:
+            return [field.json() for field in Field.all]
+        elif id in range(len(Field.all)):
+            return Field.all[id].json()
         else:
             return {
                 'error': 'Unable to locate step'
