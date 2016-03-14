@@ -6,7 +6,6 @@ from itertools import chain
 
 class ProcedureServer(object):
     def __init__(self):
-        self.stepsList = []
         self.name = ""
         if self.define:
             self.define()
@@ -15,17 +14,14 @@ class ProcedureServer(object):
         cherrypy.quickstart(self)
 
     def step(self, name):
-        step = Step(len(self.stepsList), name)
-        self.stepsList.append(step)
+        step = Step(name)
         return step
 
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def index(self):
         return {
-            'id': 0,
-            'name': self.name,
-            'stepsCount': len(self.stepsList)
+            'message': 'OK'
         }
 
     @cherrypy.expose
@@ -34,16 +30,25 @@ class ProcedureServer(object):
 
     @cherrypy.expose
     @cherrypy.tools.json_out()
-    def steps(self, order=None):
+    def procedureApi(self, id=None):
+        return {
+            'id': 0,
+            'name': self.name,
+            'stepsCount': len(Step.all)
+        }
+
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def stepApi(self, id=None):
         try:
-            order = int(order)
+            id = int(id)
         except:
             pass
 
-        if order is None:
-            return [step.json() for step in self.stepsList]
-        elif order in range(len(self.stepsList)):
-            return self.stepsList[order].json()
+        if id is None:
+            return [step.json() for step in Step.all]
+        elif id in range(len(Step.all)):
+            return Step.all[id].json()
         else:
             return {
                 'error': 'Unable to locate step'
@@ -51,7 +56,7 @@ class ProcedureServer(object):
 
     @cherrypy.expose
     @cherrypy.tools.json_out()
-    def fields(self, id=None):
+    def fieldApi(self, id=None):
         try:
             id = int(id)
         except:
